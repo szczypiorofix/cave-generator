@@ -32,7 +32,7 @@ private final KeyStroke ctrl_T = KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEve
 private final KeyStroke ctrl_C = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK);
 private final int ROWS = 40, COLS = 40;
 private Random random;
-private boolean[][] cellMap = new boolean[ROWS][COLS];
+private int[][] cellMap = new int[ROWS][COLS];
 private Button[][] buttons;
 private int[][] fields;
 
@@ -120,40 +120,96 @@ public void clearMap(boolean b)
 	}
 }
 
-public boolean[][] wygladzanie(boolean[][] inputMap, int x, int y)
+public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, int defaultBlock, int defaultEmpty)
 {
-	int count = 0;
-    for(int i=-1; i<2; i++){
-        for(int j=-1; j<2; j++){
-            int neighbour_x = x+i;
-            int neighbour_y = y+j;
-            //If we're looking at the middle point
-            if(i == 0 && j == 0){
-                //Do nothing, we don't want to add ourselves in!
-            }
-            //In case the index we're looking at it off the edge of the map
-            else if(neighbour_x < 0 || neighbour_y < 0 || neighbour_x >= inputMap.length || neighbour_y >= inputMap[0].length){
-                count = count + 1;
-            }
-            //Otherwise, a normal check of the neighbour
-            else if(inputMap[neighbour_x][neighbour_y]){
-                count = count + 1;
-            }
-        }
-    }
-	return inputMap;
-}
-
-public void clearTempMap()
-{
-	for (int i = 0; i < ROWS; i++)
+	int MX = inputMap.length;
+	int MY = inputMap[0].length;
+	
+	int temp[][] = new int[MX][MY];
+	
+	// PRZEPISANIE OBECNEJ MAPY NA TEMPMAPE
+	for (int i = 0; i < MX; i++)
 	{
-		for (int j = 0; j < COLS; j++)
+		for (int j = 0; j < MY; j++)
 		{
-			cellMap[i][j] = 0;
+			temp[i][j] = inputMap[i][j];
 		}
 	}
+	
+	// TUTAJ JEST WYGLADZANIE TERENU
+	int[][] maxT = new int[MX][MY]; // TABLICA BLOKÓW
+	for (int i = 0; i < MX; i++)
+		for (int j = 0; j < MY; j++)
+			maxT[i][j] = defaultEmpty;
+			
+	int[][] maxE = new int[MX][MY]; // TABLICA BLOKÓW
+	for (int i = 0; i < MX; i++)
+		for (int j = 0; j < MY; j++)
+			maxE[i][j] = defaultEmpty;
+
+	for (int i = 0; i < MX; i++)
+	{
+		for (int j = 0; j < MY; j++)
+		{
+			if ((i > 0) && i < (MX-1) && (j > 0) && (j < MY-1))
+			{			
+				/// SPRAWDZANIE KONKRETNEGO BLOKU PE£NEGO
+				maxT[i][j] = 0;
+				int[][] tempNeighbor = new int[3][3];
+							
+				// ZBIERANIE SASIADÓW
+				for (int a = -1; a < 2; a++)
+					for (int b = -1; b < 2; b++)
+					{
+						tempNeighbor[a+1][b+1] = temp[i+a][j+b];						
+					}
+							
+				for (int a = 0; a < 3; a++)
+					for (int b = 0; b < 3; b++)
+					{
+						if (tempNeighbor[a][b] == 1) maxT[i][j] += 1; // NABIJANIE ILOŒCI SASIADÓW
+					}	
+			}
+
+			if (maxT[i][j] > fullBlocks)
+			{
+				temp[i][j] = defaultBlock;
+			}
+		}
+	}
+	
+	for (int i = 0; i < MX; i++)
+	{
+		for (int j = 0; j < MY; j++)
+		{
+			if ((i > 0) && i < (MX-1) && (j > 0) && (j < MY-1))
+			{			
+				/// SPRAWDZANIE KONKRETNEGO BLOKU PE£NEGO
+				maxE[i][j] = 0;
+				int[][] tempNeighbor = new int[3][3];
+							
+				// ZBIERANIE SASIADÓW
+				for (int a = -1; a < 2; a++)
+					for (int b = -1; b < 2; b++)						
+						tempNeighbor[a+1][b+1] = temp[i+a][j+b];
+							
+				for (int a = 0; a < 3; a++)
+					for (int b = 0; b < 3; b++)
+					{
+						if (tempNeighbor[a][b] == 0) maxE[i][j] += 1; // NABIJANIE ILOŒCI SASIADÓW
+					}	
+			}
+
+			if (maxE[i][j] > emptyBlocks)
+			{
+				temp[i][j] = defaultEmpty;
+			}
+		}
+	}
+	
+	return temp;
 }
+
 
 @Override
 public void actionPerformed(ActionEvent e) {
