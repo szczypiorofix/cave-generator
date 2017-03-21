@@ -24,9 +24,9 @@ private static final long serialVersionUID = -6462465077833094465L;
 private JPanel panel;
 private JMenuBar bar = new JMenuBar();
 private JMenu menuGen = new JMenu("Generuj");
-private JMenuItem menuGenCzysc = new JMenuItem("CzyúÊ");
+private JMenuItem menuGenCzysc = new JMenuItem("Czy≈õƒá");
 private JMenuItem menuGerLosowo = new JMenuItem("Losowy teren");
-private JMenuItem menuGenWygladzanie = new JMenuItem("Wyg≥adzanie");
+private JMenuItem menuGenWygladzanie = new JMenuItem("Wyg≈Çadzanie");
 private final KeyStroke ctrl_W = KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK);
 private final KeyStroke ctrl_T = KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK);
 private final KeyStroke ctrl_C = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK);
@@ -39,7 +39,7 @@ private int[][] fields;
 
 public CellularAutomata()
 {
-	super("Automat KomÛrkowy");
+	super("Automat Kom√≥rkowy");
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setSize(800, 700);
 	setLocationRelativeTo(null);
@@ -136,13 +136,13 @@ public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, i
 		}
 	}
 	
-	// TUTAJ JEST WYGLADZANIE TERENU
-	int[][] maxT = new int[MX][MY]; // TABLICA BLOK”W
+	// TUTAJ JEST WYG≈ÅADZANIE TERENU
+	int[][] maxT = new int[MX][MY]; // TABLICA BLOK√ìW
 	for (int i = 0; i < MX; i++)
 		for (int j = 0; j < MY; j++)
 			maxT[i][j] = defaultEmpty;
 			
-	int[][] maxE = new int[MX][MY]; // TABLICA BLOK”W
+	int[][] maxE = new int[MX][MY]; // TABLICA BLOK√ìW
 	for (int i = 0; i < MX; i++)
 		for (int j = 0; j < MY; j++)
 			maxE[i][j] = defaultEmpty;
@@ -153,11 +153,11 @@ public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, i
 		{
 			if ((i > 0) && i < (MX-1) && (j > 0) && (j < MY-1))
 			{			
-				/// SPRAWDZANIE KONKRETNEGO BLOKU PE£NEGO
+				/// SPRAWDZANIE KONKRETNEGO BLOKU PE≈ÅNEGO
 				maxT[i][j] = 0;
 				int[][] tempNeighbor = new int[3][3];
 							
-				// ZBIERANIE SASIAD”W
+				// ZBIERANIE SASIAD√ìW
 				for (int a = -1; a < 2; a++)
 					for (int b = -1; b < 2; b++)
 					{
@@ -167,7 +167,7 @@ public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, i
 				for (int a = 0; a < 3; a++)
 					for (int b = 0; b < 3; b++)
 					{
-						if (tempNeighbor[a][b] == 1) maxT[i][j] += 1; // NABIJANIE ILOåCI SASIAD”W
+						if (tempNeighbor[a][b] == 1) maxT[i][j] += 1; // NABIJANIE ILO≈öCI SASIAD√ìW
 					}	
 			}
 
@@ -184,11 +184,10 @@ public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, i
 		{
 			if ((i > 0) && i < (MX-1) && (j > 0) && (j < MY-1))
 			{			
-				/// SPRAWDZANIE KONKRETNEGO BLOKU PE£NEGO
+				/// SPRAWDZANIE KONKRETNEGO BLOKU PEÔøΩNEGO
 				maxE[i][j] = 0;
-				int[][] tempNeighbor = new int[3][3];
-							
-				// ZBIERANIE SASIAD”W
+				int[][] tempNeighbor = new int[3][3];			
+				// ZBIERANIE SASIADÔøΩW
 				for (int a = -1; a < 2; a++)
 					for (int b = -1; b < 2; b++)						
 						tempNeighbor[a+1][b+1] = temp[i+a][j+b];
@@ -196,17 +195,15 @@ public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, i
 				for (int a = 0; a < 3; a++)
 					for (int b = 0; b < 3; b++)
 					{
-						if (tempNeighbor[a][b] == 0) maxE[i][j] += 1; // NABIJANIE ILOåCI SASIAD”W
+						if (tempNeighbor[a][b] == 0) maxE[i][j] += 1; // NABIJANIE ILOÔøΩCI SASIADÔøΩW
 					}	
 			}
-
 			if (maxE[i][j] > emptyBlocks)
 			{
 				temp[i][j] = defaultEmpty;
 			}
 		}
 	}
-	
 	return temp;
 }
 
@@ -216,8 +213,7 @@ public void actionPerformed(ActionEvent e) {
 	
 	if (e.getActionCommand().equalsIgnoreCase("LOSOWO"))
 	{
-		//clearTempMap();
-		
+		//clearTempMap(); // NAK≈ÅADANIE LOSOWYCH POZIOM√ìW ?
 		for (int i = 0; i < ROWS; i++)
 		{
 			for (int j = 0; j < COLS; j++)
@@ -227,7 +223,6 @@ public void actionPerformed(ActionEvent e) {
 		}
 		
 		cellMap = Arrays.copyOf(fields, fields.length);
-		
 		// LOSOWY TEREN
 		for (int i = 1; i < ROWS-1; i++)
 		{
@@ -239,7 +234,6 @@ public void actionPerformed(ActionEvent e) {
 		}
 		
 		fields = Arrays.copyOf(cellMap, cellMap.length);
-		
 		// DODANIE DO OBECNEGO TERENU - TERENU LOSOWEGO
 		for (int i = 0; i < ROWS; i++)
 		{
@@ -254,12 +248,9 @@ public void actionPerformed(ActionEvent e) {
 		}
 	}
 	
-	
 	if (e.getActionCommand().equalsIgnoreCase("WYGLADZANIE"))
 	{
-		
-		fields = wygladzanie(fields, 5, 4, 1, 0);		
-		
+		fields = wygladzanie(fields, 5, 4, 1, 0);
 		for (int i = 0; i < ROWS; i++)
 		{
 			for (int j = 0; j < COLS; j++)
@@ -271,8 +262,6 @@ public void actionPerformed(ActionEvent e) {
 				buttons[i][j].setText(fields[i][j]+"");
 			}
 		}
-		
-		
 	}
 	
 	if (e.getActionCommand().equalsIgnoreCase("CZYSC"))
