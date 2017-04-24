@@ -128,7 +128,7 @@ public int countNeighbours(int[][] map, int x, int y){
           int neighbour_y = y+j;
           if (i != 0 || j != 0) {
 	      	  if (neighbour_x < 0 || neighbour_y < 0 || neighbour_x >= map.length || neighbour_y >= map[0].length) count = count + 1;
-	      	  else if (map[neighbour_x][neighbour_y] == 1) count = count + 1;
+	      	  else if (map[neighbour_x][neighbour_y] == 1) count = count + 1;        	  
           }
       }
   }
@@ -144,21 +144,16 @@ public int[][] wygladzanie(int [][] inputMap, int fullBlocks, int emptyBlocks, i
 	
 	for (int x = 1; x < MX-1; x++) {
         for (int y = 1; y < MY-1; y++) {
+        	newMap[x][y] = defaultEmpty;
             int nbs = countNeighbours(inputMap, x, y);
             if (inputMap[x][y] == 1) {
-                if (nbs < fullBlocks) {
-                    newMap[x][y] = defaultEmpty;
-                }
-                else {
+                if (nbs >= fullBlocks) {
                     newMap[x][y] = defaultBlock;
                 }
             }
             else {
-                if (nbs > emptyBlocks) {
+            	if (nbs >= emptyBlocks) {
                     newMap[x][y] = defaultBlock;
-                }
-                else {
-                    newMap[x][y] = defaultEmpty;
                 }
             }
         }
@@ -188,7 +183,6 @@ public void actionPerformed(ActionEvent e) {
 			for (int j = 1; j < COLS-1; j++)
 			{
 				if (random(100) < 45) cellMap[i][j] = 1; // 45% bloków ścian
-				//else cellMap[i][j] = 0; // NAKŁADANIE LOSOWYCH POZIOMÓW ?
 			}
 		}
 		
@@ -201,7 +195,6 @@ public void actionPerformed(ActionEvent e) {
 				if (fields[i][j] == 1)
 				{
 					buttons[i][j].setBackground(Color.WHITE);
-					//buttons[i][j].setText(fields[i][j]+"");
 				}
 			}
 		}
@@ -209,7 +202,7 @@ public void actionPerformed(ActionEvent e) {
 	
 	if (e.getActionCommand().equalsIgnoreCase("WYGLADZANIE"))
 	{
-		fields = wygladzanie(fields, 3, 4, 1, 0);
+		fields = wygladzanie(fields, 3, 5, 1, 0);
 		for (int i = 0; i < ROWS; i++)
 		{
 			for (int j = 0; j < COLS; j++)
@@ -218,7 +211,6 @@ public void actionPerformed(ActionEvent e) {
 				{
 					buttons[i][j].setBackground(Color.WHITE);
 				} else buttons[i][j].setBackground(Color.GRAY);
-				//buttons[i][j].setText(fields[i][j]+"");
 			}
 		}
 	}
@@ -227,111 +219,5 @@ public void actionPerformed(ActionEvent e) {
 	{
 		clearMap(true);
 	}
-}
-
-public int[][] wygladzanie_stare(int [][] inputMap, int fullBlocks, int emptyBlocks, int defaultBlock, int defaultEmpty)
-{
-	int MX = inputMap.length;
-	int MY = inputMap[0].length;
-	
-	int temp[][] = new int[MX][MY];
-	
-	// PRZEPISANIE OBECNEJ MAPY NA TEMPMAPE
-	for (int i = 0; i < MX; i++)
-	{
-		for (int j = 0; j < MY; j++)
-		{
-			temp[i][j] = inputMap[i][j];
-		}
-	}
-	
-	// TUTAJ JEST WYGŁADZANIE TERENU
-	int[][] maxT = new int[MX][MY]; // TABLICA BLOKÓW
-	for (int i = 0; i < MX; i++)
-		for (int j = 0; j < MY; j++)
-			maxT[i][j] = defaultEmpty;
-			
-	int[][] maxE = new int[MX][MY]; // TABLICA BLOKÓW
-	for (int i = 0; i < MX; i++)
-		for (int j = 0; j < MY; j++)
-			maxE[i][j] = defaultEmpty;
-
-	for (int i = 0; i < MX; i++)
-	{
-		for (int j = 0; j < MY; j++)
-		{
-			if ((i > 0) && i < (MX-1) && (j > 0) && (j < MY-1))
-			{			
-				/// SPRAWDZANIE KONKRETNEGO BLOKU PEŁNEGO
-				maxT[i][j] = 0;
-				int[][] tempNeighbor = new int[3][3];
-							
-				// ZBIERANIE SASIADÓW
-				for (int a = -1; a < 2; a++)
-					for (int b = -1; b < 2; b++)
-					{
-						tempNeighbor[a+1][b+1] = temp[i+a][j+b];						
-					}
-							
-				for (int a = 0; a < 3; a++)
-					for (int b = 0; b < 3; b++)
-					{
-						if (tempNeighbor[a][b] == 1) maxT[i][j] += 1; // NABIJANIE ILOŚCI SASIADÓW
-					}
-				
-				/// SPRAWDZANIE KONKRETNEGO BLOKU PE�NEGO
-				maxE[i][j] = 0;
-				tempNeighbor = new int[3][3];			
-				// ZBIERANIE SASIAD�W
-				for (int a = -1; a < 2; a++)
-					for (int b = -1; b < 2; b++)						
-						tempNeighbor[a+1][b+1] = temp[i+a][j+b];
-							
-				for (int a = 0; a < 3; a++)
-					for (int b = 0; b < 3; b++)
-					{
-						if (tempNeighbor[a][b] == 0) maxE[i][j] += 1; // NABIJANIE ILO�CI SASIAD�W
-					}
-			}
-
-			if (maxT[i][j] > fullBlocks)
-			{
-				temp[i][j] = defaultBlock;
-			}
-			if (maxE[i][j] > emptyBlocks)
-			{
-				temp[i][j] = defaultEmpty;
-			}
-		}
-	}
-	/**
-	for (int i = 0; i < MX; i++)
-	{
-		for (int j = 0; j < MY; j++)
-		{
-			if ((i > 0) && i < (MX-1) && (j > 0) && (j < MY-1))
-			{			
-				/// SPRAWDZANIE KONKRETNEGO BLOKU PE�NEGO
-				maxE[i][j] = 0;
-				int[][] tempNeighbor = new int[3][3];			
-				// ZBIERANIE SASIAD�W
-				for (int a = -1; a < 2; a++)
-					for (int b = -1; b < 2; b++)						
-						tempNeighbor[a+1][b+1] = temp[i+a][j+b];
-							
-				for (int a = 0; a < 3; a++)
-					for (int b = 0; b < 3; b++)
-					{
-						if (tempNeighbor[a][b] == 0) maxE[i][j] += 1; // NABIJANIE ILO�CI SASIAD�W
-					}	
-			}
-			if (maxE[i][j] > emptyBlocks)
-			{
-				temp[i][j] = defaultEmpty;
-			}
-		}
-	}
-	**/
-	return temp;
 }
 }
