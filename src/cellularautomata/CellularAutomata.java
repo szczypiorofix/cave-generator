@@ -82,19 +82,6 @@ public CellularAutomata()
 	add(panel);
 }
 
-	
-public static void main(String[] args) {
-
-	EventQueue.invokeLater(new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			new CellularAutomata().setVisible(true);	
-		}
-	});
-}
-
 public int random(int number)
 {
 	int i = random.nextInt(number);
@@ -220,4 +207,17 @@ public void actionPerformed(ActionEvent e) {
 		clearMap(true);
 	}
 }
+
+	public static void main(String[] args) {
+
+		EventQueue.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				new CellularAutomata().setVisible(true);
+			}
+		});
+	}
+
 }
